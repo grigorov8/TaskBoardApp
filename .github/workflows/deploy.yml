@@ -25,7 +25,7 @@ jobs:
     - name: Build Docker image with latest tag
       run: |
       
-        docker build -t dlg8/taskboardapp:latest .  
+        docker build -t dlg8/taskboardapp:latest ./TaskBoard.WebApp  
 
     - name: Push Docker images
       run: |
