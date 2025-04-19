@@ -1,46 +1,35 @@
-name: CI/CD for TaskBoardApp
+name: Deploy TaskBoardApp to AKS
 
 on:
   push:
-    branches: [ "main" ]  
+    branches: [ "main" ]
 
 jobs:
   build-deploy:
-    runs-on: ubuntu-latest  
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  
+      uses: actions/checkout@v3
 
     - name: Log in to Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin  
-
-
-    - name: Build Docker image with version
-      run: |
-        VERSION=$(git rev-parse --short HEAD)
-        docker build -t dlg8/taskboardapp:${VERSION} ./TaskBoard.WebApp
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
 
     - name: Build Docker image with latest tag
       run: |
         docker build -t dlg8/taskboardapp:latest ./TaskBoard.WebApp
 
-
-    - name: Push Docker images
-      run: |
-      
-        docker push dlg8/taskboardapp:${VERSION}  
-        docker push dlg8/taskboardapp:latest  
+    - name: Push Docker image to Docker Hub
+      run: docker push dlg8/taskboardapp:latest
 
     - name: Set AKS context
       uses: azure/aks-set-context@v3
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}  
-        cluster-name: dlgCluster  
-        resource-group: kubernetesrg  
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        cluster-name: dlgCluster
+        resource-group: kubernetesrg
 
     - name: Deploy to AKS
       run: |
-      
-        kubectl apply -f k8s/deployment.yaml  
-        kubectl apply -f k8s/service.yaml  
+        kubectl apply -f k8s/deployment.yaml
+        kubectl apply -f k8s/service.yaml
