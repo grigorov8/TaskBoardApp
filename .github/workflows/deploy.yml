@@ -1,0 +1,47 @@
+name: CI/CD for TaskBoardApp
+
+on:
+  push:
+    branches: [ "main" ]  
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest  
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3  
+
+    - name: Log in to Docker Hub
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin  
+
+
+    - name: Build Docker image with version
+      run: |
+      
+        VERSION=$(git rev-parse --short HEAD)  
+        docker build -t dlg8/taskboardapp:${VERSION} .  
+
+    - name: Build Docker image with latest tag
+      run: |
+      
+        docker build -t dlg8/taskboardapp:latest .  
+
+    - name: Push Docker images
+      run: |
+      
+        docker push dlg8/taskboardapp:${VERSION}  
+        docker push dlg8/taskboardapp:latest  
+
+    - name: Set AKS context
+      uses: azure/aks-set-context@v3
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}  
+        cluster-name: dlgCluster  
+        resource-group: kubernetesrg  
+
+    - name: Deploy to AKS
+      run: |
+      
+        kubectl apply -f k8s/deployment.yaml  
+        kubectl apply -f k8s/service.yaml  
