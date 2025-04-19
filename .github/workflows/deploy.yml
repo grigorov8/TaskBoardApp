@@ -20,7 +20,7 @@ jobs:
       run: |
       
         VERSION=$(git rev-parse --short HEAD)  
-        docker build -t dlg8/taskboardapp:${VERSION} .  
+        docker build -t dlg8/taskboardapp:${VERSION} ./TaskBoard.WebApp  
 
     - name: Build Docker image with latest tag
       run: |
