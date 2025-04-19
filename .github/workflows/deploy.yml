@@ -18,14 +18,13 @@ jobs:
 
     - name: Build Docker image with version
       run: |
-      
-        VERSION=$(git rev-parse --short HEAD)  
-        docker build -t dlg8/taskboardapp:${VERSION} ./TaskBoard.WebApp  
+        VERSION=$(git rev-parse --short HEAD)
+        docker build -t dlg8/taskboardapp:${VERSION} ./TaskBoard.WebApp
 
     - name: Build Docker image with latest tag
       run: |
-      
-        docker build -t dlg8/taskboardapp:latest ./TaskBoard.WebApp  
+        docker build -t dlg8/taskboardapp:latest ./TaskBoard.WebApp
+
 
     - name: Push Docker images
       run: |
