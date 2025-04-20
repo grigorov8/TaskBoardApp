@@ -46,7 +46,7 @@ jobs:
 
     - name: Deploy to AKS
       run: |
-        kubectl apply -f k8s/sql-deployment.yaml
-        kubectl apply -f k8s/sql-service.yaml
-        kubectl apply -f k8s/app-deployment.yaml
-        kubectl apply -f k8s/app-service.yaml
+        kubectl apply -f k8s/Sql-deployment.yaml
+        kubectl apply -f k8s/Sql-service.yaml
+        kubectl apply -f k8s/Deployment.yaml
+        kubectl apply -f k8s/Service.yaml
