@@ -23,3 +23,8 @@ spec:
                 secretKeyRef:
                   name: taskboard-secret
                   key: DefaultConnection
+            - name: SA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sql-secret
+                  key: SA_PASSWORD
