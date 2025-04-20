@@ -1,19 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: taskboard-deployment
+  name: taskboard-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: taskboard
+      app: taskboard-app
   template:
     metadata:
       labels:
-        app: taskboard
+        app: taskboard-app
     spec:
       containers:
-      - name: taskboard
-        image: dlg8/taskboardapp:latest
-        ports:
-        - containerPort: 80
+        - name: taskboard-container
+          image: dlg8/taskboardapp:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: DefaultConnection
+              valueFrom:
+                secretKeyRef:
+                  name: taskboard-secret
+                  key: DefaultConnection
