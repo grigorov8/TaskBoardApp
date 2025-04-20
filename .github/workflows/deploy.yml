@@ -32,7 +32,21 @@ jobs:
         resource-group: kubernetesrg
         cluster-name: dlgCluster
 
+    - name: Create secret for SQL Server password
+      run: |
+        kubectl create secret generic sql-secret \
+          --from-literal=SA_PASSWORD=${{ secrets.SQL_SA_PASSWORD }} \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Create secret for app connection string
+      run: |
+        kubectl create secret generic taskboard-secret \
+          --from-literal=DefaultConnection="${{ secrets.DEFAULT_CONNECTION }}" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
     - name: Deploy to AKS
       run: |
-        kubectl apply -f k8s/Deployment.yaml
-        kubectl apply -f k8s/Service.yaml
+        kubectl apply -f k8s/sql-deployment.yaml
+        kubectl apply -f k8s/sql-service.yaml
+        kubectl apply -f k8s/app-deployment.yaml
+        kubectl apply -f k8s/app-service.yaml
